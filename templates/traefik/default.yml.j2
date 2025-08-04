@@ -27,13 +27,13 @@ tls:
       sniStrict: true
 
 http:
-  {% if middleware_proxy_rule %}
   routers:
     dashboard:
-      rule: Host(`{{ inventory_hostname }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      rule: Host(`{{ docker_traefik_root_url }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       service: "api@internal"
       middlewares:
-        - {{ middleware_auth_proxy }}
+  {% if middleware_proxy_rule %}
+         - {{ middleware_auth_proxy }}
   {% endif %}
   middlewares:
     set_basicHeaders:
