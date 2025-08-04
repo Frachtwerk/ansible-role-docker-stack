@@ -167,56 +167,6 @@
       DESEC_TOKEN: "{{ docker_traefik_dns_token }}"
   when: docker_traefik_dns_token is defined and docker_traefik_dns_token | length
 
-# Labels
-- name: Create traefik labels (https)
-  ansible.builtin.set_fact:
-    traefik_labels:
-      traefik.enable: "true"
-      traefik.http.routers.traefik.entrypoints: "{{ docker_traefik_entrypoint_name_https }}"
-      traefik.http.routers.traefik.rule: "Host(`{{ docker_traefik_root_url }}`)"
-      traefik.http.routers.traefik.service: "api@internal"
-  when: docker_traefik_https_enabled | bool
-
-- name: Add traefik labels (tls)
-  ansible.builtin.set_fact:
-    traefik_labels: "{{ traefik_labels | combine({item.key: item.value}) }}"
-  with_items:
-    - {key: traefik.http.routers.traefik.tls, value: "true"}
-    - {key: traefik.http.routers.traefik.tls.certresolver, value: "leresolver"}
-  when: docker_traefik_https_enabled | bool and docker_traefik_enable_acme | bool
-
-- name: Create traefik labels (http)
-  ansible.builtin.set_fact:
-    traefik_labels:
-      traefik.enable: "true"
-      traefik.http.routers.traefik.entrypoints: "{{ docker_traefik_entrypoint_name_http }}"
-      traefik.http.routers.traefik.rule: "Host(`{{ docker_traefik_root_url }}`)"
-      traefik.http.routers.traefik.service: "api@internal"
-  when: not docker_traefik_https_enabled | bool
-
-- name: Create IP-Whitelist-Label
-  ansible.builtin.set_fact:
-    traefik_whitelist_labels:
-      traefik.http.routers.traefik.middlewares: "default-ipwhitelist@file"
-  when: ipwhitelist|length
-
-- name: Append IP-Whitelist-Label
-  ansible.builtin.set_fact:
-    traefik_labels: "{{ traefik_labels | combine(traefik_whitelist_labels) }}"
-  when: ipwhitelist|length
-
-- name: Create Auth-Label
-  ansible.builtin.set_fact:
-    traefik_auth_labels:
-      traefik.http.middlewares.traefik-auth.basicauth.users: "{{ docker_traefik_basic_auth }}"
-      traefik.http.routers.traefik.middlewares: "traefik-auth@docker"
-  when: docker_traefik_basic_auth is defined
-
-- name: Append Auth-Label
-  ansible.builtin.set_fact:
-    traefik_labels: "{{ traefik_labels | combine(traefik_auth_labels) }}"
-  when: traefik_auth_labels is defined
-
 # start traefik
 - name: Start Traefik
   community.docker.docker_container:
@@ -234,7 +184,6 @@
     # purge_networks: true
     ports: "{{ docker_traefik_ports | list }}"
     volumes: "{{ traefik_volumes }}"
-    labels: "{{ traefik_labels }}"
     env: "{{ traefik_environment }}"
     healthcheck:
       test: "traefik healthcheck --ping | grep 'OK'"

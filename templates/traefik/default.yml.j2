@@ -32,10 +32,22 @@ http:
       rule: Host(`{{ docker_traefik_root_url }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       service: "api@internal"
       middlewares:
-  {% if middleware_proxy_rule %}
+  {% if middleware_proxy_rule is defined %}
          - {{ middleware_auth_proxy }}
   {% endif %}
+  {% if ipwhitelist | length %}
+          - default-ipwhitelist@file
+  {% endif %}
+  {% if docker_traefik_basic_auth is defined %}
+         - traefik-auth@file 
+  {% endif %}
   middlewares:
+  {%if docker_traefik_basic_auth is defined %}
+    traefik-auth:
+      basicAuth:
+        users:
+          - {{ docker_traefik_basic_auth }}
+  {% endif %}
     set_basicHeaders:
       headers:
         forceSTSHeader: true
