@@ -27,6 +27,14 @@ tls:
       sniStrict: true
 
 http:
+  {% if middleware_proxy_rule %}
+  routers:
+    dashboard:
+      rule: Host(`{{ traefik_internal_host }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      service: "api@internal"
+      middlewares:
+        - {{ middleware_auth_proxy }}
+  {% endif %}
   middlewares:
     set_basicHeaders:
       headers:
