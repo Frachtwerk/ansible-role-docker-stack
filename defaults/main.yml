@@ -36,6 +36,7 @@ docker_traefik_dns_challenge: false
 docker_traefik_dns_provider: ""
 docker_traefik_dns_resolvers: []
 docker_traefik_dns_delay: "20"
+middleware_proxy_rule: authentik-proxy@docker
 # -- watchtower -----------------
 watchtower_poll_interval: "3600"
 watchtower_schedule: ""
