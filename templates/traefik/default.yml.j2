@@ -30,7 +30,7 @@ http:
   {% if middleware_proxy_rule %}
   routers:
     dashboard:
-      rule: Host(`{{ traefik_internal_host }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      rule: Host(`{{ inventory_hostname }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       service: "api@internal"
       middlewares:
         - {{ middleware_auth_proxy }}
