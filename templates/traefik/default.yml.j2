@@ -32,22 +32,42 @@ http:
       rule: Host(`{{ docker_traefik_root_url }}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       service: "api@internal"
       middlewares:
-  {% if middleware_proxy_rule is defined %}
-         - {{ middleware_auth_proxy }}
-  {% endif %}
-  {% if ipwhitelist | length %}
-          - default-ipwhitelist@file
-  {% endif %}
-  {% if docker_traefik_basic_auth is defined %}
-         - traefik-auth@file 
-  {% endif %}
+{% if middleware_auth_proxy is defined %}
+        - {{ middleware_auth_proxy }}
+{% endif %}
+{% if ipwhitelist | length %}
+        - default-ipwhitelist
+{% endif %}
+{% if docker_traefik_basic_auth is defined %}
+        - traefik-auth 
+{% endif %}
+        - compression
   middlewares:
-  {%if docker_traefik_basic_auth is defined %}
+{% if middleware_auth_proxy is defined %}
+    {{ middleware_auth_proxy }}:
+      forwardAuth:
+        address: http://{{ middleware_auth_proxy_host }}:9000/outpost.goauthentik.io/auth/traefik
+        trustForwardHeader: true
+        authResponseHeaders:
+          - X-authentik-username
+          - X-authentik-groups
+          - X-authentik-entitlements
+          - X-authentik-email
+          - X-authentik-name
+          - X-authentik-uid
+          - X-authentik-jwt
+          - X-authentik-meta-jwks
+          - X-authentik-meta-outpost
+          - X-authentik-meta-provider
+          - X-authentik-meta-app
+          - X-authentik-meta-version
+{% endif %}
+{% if docker_traefik_basic_auth is defined %}
     traefik-auth:
       basicAuth:
         users:
           - {{ docker_traefik_basic_auth }}
-  {% endif %}
+{% endif %}
     set_basicHeaders:
       headers:
         forceSTSHeader: true
