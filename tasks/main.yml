@@ -5,6 +5,10 @@
     name: docker
     state: started
 
+- name: Start Fluent Bit
+  ansible.builtin.include_tasks: docker-fluentbit.yml
+  when: docker_fluentbit_loki_host != ""
+
 - name: Create Proxy Network
   community.docker.docker_network:
     name: "{{ docker_traefik_network_name }}"
