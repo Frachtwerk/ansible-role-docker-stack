@@ -51,3 +51,4 @@ docker_fluentbit_image: "fluent/fluent-bit"
 docker_fluentbit_version: "1.9.10"
 docker_fluentbit_loki_host: "localhost"
 docker_fluentbit_loki_port: "3100"
+docker_install_fluentbit: false

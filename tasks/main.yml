@@ -7,7 +7,7 @@
 
 - name: Start Fluent Bit
   ansible.builtin.include_tasks: docker-fluentbit.yml
-  when: docker_fluentbit_loki_host != ""
+  when: docker_install_fluentbit | bool
 
 - name: Create Proxy Network
   community.docker.docker_network:
