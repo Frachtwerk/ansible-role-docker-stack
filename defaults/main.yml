@@ -12,6 +12,7 @@ docker_portainer_parameter: "" # e.g.--logo
 # -- traefik -------------------
 # renovate: depName=traefik
 docker_traefik_version: "v2.11"
+docker_traefik_custom_environment: {}
 docker_traefik_path: "/opt/traefik/"
 docker_traefik_network_name: "proxy"
 docker_traefik_network_enable_ipv6: false

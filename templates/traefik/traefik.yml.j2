@@ -129,10 +129,12 @@ certificatesResolvers:
 {% if docker_traefik_dns_challenge | bool %}
       dnsChallenge:
         provider: {{ docker_traefik_dns_provider }}
+{% if docker_traefik_dns_resolvers | length %}
         resolvers:
 {% for resolver in docker_traefik_dns_resolvers %}
           - "{{ resolver }}"
 {% endfor %}
+{% endif %}
 {% if docker_traefik_dns_delay is defined %}
 {% if docker_traefik_version.replace('v', '') is version('3.3', '<') %}
         delayBeforeCheck: "{{ docker_traefik_dns_delay }}"

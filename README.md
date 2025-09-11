@@ -6,6 +6,95 @@ Set up [portainer](https://docs.portainer.io/), [traefik](https://doc.traefik.io
 
 Docker up and running
 
+## Dependencies
+
+[Community General Collection](https://docs.ansible.com/ansible/latest/collections/community/general/index.html) (comes with `ansible`, but not with `ansible-core`)
+
+## Usage
+
+### Traefik
+
+#### DNS Challenge
+
+Activate by setting  `docker_traefik_dns_challenge: true`  
+Requires:
+
+- Provider: `docker_traefik_dns_provider`
+- Resolvers (sometimes): `docker_traefik_dns_resolver`
+
+Anything further is communicated via the env of the traefik container, e.g.:  
+
+```yaml
+docker_traefik_custom_environment:
+  CLOUDFLARE_DNS_API_TOKEN: "1234567890abcdefghijklmnopqrstuvwxyz"
+```
+
+See the [lego docs](https://go-acme.github.io/lego/dns/index.html) for your provider
+
+## Example Playbook
+
+Depending on what loadout you wanna achieve:
+
+```yaml
+    - name: Install Stack on Docker host
+    - hosts: docker
+      become: true
+      vars:
+        docker_install_traefik: true
+        docker_install_watchtower: true
+        docker_install_portainer: true
+        docker_install_portainer_agent: true
+      roles:
+        - ansible_role_docker_stack
+```
+
+```yaml
+    - name: Install traefik with wildcard certificates on Docker host
+    - hosts: docker
+      become: true
+      vars:
+        docker_install_traefik: true
+        docker_traefik_https_enabled: true
+        docker_traefik_enable_acme: true
+        docker_traefik_wildcard_list: ["example.com","internal.example.com"]
+        docker_traefik_enable_stored_certs: false
+        docker_traefik_acme_mail: "admin@example.com"
+        docker_traefik_dns_challenge: true
+        docker_traefik_dns_provider: "desec"  # https://go-acme.github.io/lego/dns/
+        # docker_traefik_dns_token: "abCdeFGhjk"  # obsolete
+        docker_traefik_dns_resolvers: ['21.43.78.9','11.12.23.45']
+        docker_traefik_custom_environment:
+          'DESEC_TOKEN': "abCdeFGhjk"
+      roles:
+        - ansible_role_docker_stack
+```
+
+```yaml
+    - name: Install traefik with stored certificates on Docker host
+    - hosts: docker
+      become: true
+      vars:
+        docker_install_traefik: true
+        docker_traefik_https_enabled: true
+        docker_traefik_enable_acme: false
+        docker_traefik_enable_stored_certs: true
+      roles:
+        - ansible_role_docker_stack
+```
+
+```yaml
+    - name: Install watchtower on docker
+    - hosts: all
+      become: true
+      vars:
+        docker_install_watchtower: true
+        watchtower_schedule: "0 0 3 1,3 * *"
+        watchtower_notification_service: "shoutrrr"
+        watchtower_notification_url: "chat.myservice/hook/12345"
+      roles:
+        - ansible_role_docker_stack
+```
+
 ## Role Variables
 
 ```yml
@@ -113,72 +202,6 @@ docker_logins: [{
   docker_registry_pass: ""
 }]
 
-```
-
-## Dependencies
-
-[Community General Collection](https://docs.ansible.com/ansible/latest/collections/community/general/index.html) (comes with `ansible`, but not with `ansible-core`)
-
-## Example Playbook
-
-Depending on what loadout you wanna achieve:
-
-```yaml
-    - name: Install Stack on Docker host
-    - hosts: docker
-      become: true
-      vars:
-        docker_install_traefik: true
-        docker_install_watchtower: true
-        docker_install_portainer: true
-        docker_install_portainer_agent: true
-      roles:
-        - ansible_role_docker_stack
-```
-
-```yaml
-    - name: Install traefik with wildcard certificates on Docker host
-    - hosts: docker
-      become: true
-      vars:
-        docker_install_traefik: true
-        docker_traefik_https_enabled: true
-        docker_traefik_enable_acme: true
-        docker_traefik_wildcard_list: ["example.com","internal.example.com"]
-        docker_traefik_enable_stored_certs: false
-        docker_traefik_acme_mail: "admin@example.com"
-        docker_traefik_dns_challenge: true
-        docker_traefik_dns_provider: "desec"  # https://go-acme.github.io/lego/dns/
-        docker_traefik_dns_token: "abCdeFGhjk"
-        docker_traefik_dns_resolvers: ['21.43.78.9','11.12.23.45']
-      roles:
-        - ansible_role_docker_stack
-```
-
-```yaml
-    - name: Install traefik with stored certificates on Docker host
-    - hosts: docker
-      become: true
-      vars:
-        docker_install_traefik: true
-        docker_traefik_https_enabled: true
-        docker_traefik_enable_acme: false
-        docker_traefik_enable_stored_certs: true
-      roles:
-        - ansible_role_docker_stack
-```
-
-```yaml
-    - name: Install watchtower on docker
-    - hosts: all
-      become: true
-      vars:
-        docker_install_watchtower: true
-        watchtower_schedule: "0 0 3 1,3 * *"
-        watchtower_notification_service: "shoutrrr"
-        watchtower_notification_url: "chat.myservice/hook/12345"
-      roles:
-        - ansible_role_docker_stack
 ```
 
 ## Todos
