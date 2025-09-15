@@ -6,7 +6,7 @@ http:
         - {{ docker_traefik_entrypoint_name_https }}
       rule: Host(`{{ route.url }}`)
       service: {{ service_item.name }}
-{% if route.middlewares is defined and route.middleware | length %}
+{% if route.middlewares is defined and route.middleware | length > 0 %}
       middlewares:
       {% for middleware in route.middlewares %}
         - {{ middleware }}

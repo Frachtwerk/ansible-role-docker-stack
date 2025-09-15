@@ -26,13 +26,13 @@
   ansible.builtin.set_fact:
     scheduling_env:
       WATCHTOWER_POLL_INTERVAL: "{{ watchtower_poll_interval | string }}"
-  when: not watchtower_schedule | length
+  when: not watchtower_schedule | length > 0
 
 - name: Set WATCHTOWER_SCHEDULE
   ansible.builtin.set_fact:
     scheduling_env:
       WATCHTOWER_SCHEDULE: "{{ watchtower_schedule }}"
-  when: watchtower_schedule | length
+  when: watchtower_schedule | length > 0
 
 - name: Append scheduling_env to env's
   ansible.builtin.set_fact:

@@ -184,12 +184,12 @@
   ansible.builtin.set_fact:
     traefik_whitelist_labels:
       traefik.http.routers.traefik.middlewares: "default-ipwhitelist@file"
-  when: ipwhitelist|length
+  when: ipwhitelist | length > 0
 
 - name: Append IP-Whitelist-Label
   ansible.builtin.set_fact:
     traefik_labels: "{{ traefik_labels | combine(traefik_whitelist_labels) }}"
-  when: ipwhitelist|length
+  when: ipwhitelist | length > 0
 
 - name: Create Auth-Label
   ansible.builtin.set_fact:
