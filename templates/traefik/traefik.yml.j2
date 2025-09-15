@@ -31,7 +31,7 @@ entryPoints:
 {% if docker_traefik_https_enabled | bool %}
   {{ docker_traefik_entrypoint_name_https }}:
     address: :443
-{% if docker_traefik_trusted_proxies | length %}
+{% if docker_traefik_trusted_proxies | length > 0 %}
     forwardedHeaders:
       trustedIPs:
 {% for trusted_proxy in docker_traefik_trusted_proxies %}
@@ -42,7 +42,7 @@ entryPoints:
 {% if docker_traefik_enable_acme | bool %}
       tls:
         certResolver: leresolver
-{% if docker_traefik_wildcard_list | length %}
+{% if docker_traefik_wildcard_list | length > 0 %}
         domains:
 {% for wildcard in docker_traefik_wildcard_list %}
           - main: "{{ wildcard }}"
@@ -50,7 +50,7 @@ entryPoints:
               - "*.{{ wildcard }}"
 {% endfor %}
 {% endif %}
-{% if docker_traefik_wildcard is defined and docker_traefik_wildcard | length %}
+{% if docker_traefik_wildcard is defined and docker_traefik_wildcard | length > 0 %}
         domains:
           - main: "{{ docker_traefik_wildcard }}"
             sans:
@@ -127,7 +127,7 @@ certificatesResolvers:
 {% if docker_traefik_dns_challenge | bool %}
       dnsChallenge:
         provider: {{ docker_traefik_dns_provider }}
-{% if docker_traefik_dns_resolvers | length %}
+{% if docker_traefik_dns_resolvers | length > 0 %}
         resolvers:
 {% for resolver in docker_traefik_dns_resolvers %}
           - "{{ resolver }}"
