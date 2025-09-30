@@ -23,7 +23,7 @@
 # Create Docker daemon configuration for Fluent Bit
 - name: Create docker daemon configuration for Fluent Bit
   ansible.builtin.copy:
-    dest: /etc/docker/daemon.json
+    dest: /tmp/fluentbit.daemon.json
     content: |
       {
         "log-driver": "fluentd",
@@ -35,6 +35,24 @@
     mode: '0644'
     owner: root
     group: root
+  become: true
+# Ensure /etc/docker/daemon.json exists
+- name: Ensure /etc/docker/daemon.json exists
+  ansible.builtin.file:
+    path: /etc/docker/daemon.json
+    state: touch
+  become: true
+# Merge Fluent Bit configuration into Docker daemon.json
+- name: Merge Fluent Bit configuration into Docker daemon.json
+  ansible.builtin.command:
+    cmd: >
+      jq -s 'add' /etc/docker/daemon.json /tmp/fluentbit.daemon.json > /tmp/daemon.json && mv /tmp/daemon.json /etc/docker/daemon.json
+  become: true
+# Remove temporary Fluent Bit daemon configuration file
+- name: Remove temporary Fluent Bit daemon configuration file
+  ansible.builtin.file:
+    path: /tmp/fluentbit.daemon.json
+    state: absent
   become: true
 # Restart Docker service to apply Fluent Bit configuration
 - name: Restart Docker service to apply Fluent Bit configuration
