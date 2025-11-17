@@ -19,7 +19,6 @@
   ansible.builtin.set_fact:
     watchtower_env:
       TZ: "Europe/Berlin"
-      DOCKER_API_VERSION: "1.44"
       WATCHTOWER_NOTIFICATIONS_HOSTNAME: "{{ inventory_hostname }}"
       WATCHTOWER_NOTIFICATION_TITLE_TAG: "{{ inventory_hostname }}"
 
@@ -68,7 +67,7 @@
   become: true
   community.docker.docker_container:
     name: watchtower
-    image: containrrr/watchtower
+    image: nickfedor/watchtower
     userns_mode: "host"
     comparisons:
       "*": strict
