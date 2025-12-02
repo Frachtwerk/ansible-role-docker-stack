@@ -14,7 +14,7 @@
       ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 600
-      when: ansible_os_family == 'Debian'
+      when: ansible_facts["os_family"] == 'Debian'
 
     - name: Wait for systemd to complete initialization.
       ansible.builtin.command: systemctl is-system-running
@@ -24,7 +24,7 @@
         'degraded' in systemctl_status.stdout
       retries: 30
       delay: 5
-      when: ansible_service_mgr == 'systemd'
+      when: ansible_facts["service_mgr"] == 'systemd'
       changed_when: false
       failed_when: systemctl_status.rc > 1
     - name: Run docker install role
@@ -39,4 +39,5 @@
           - name: docker
 
   roles:
-    - role: fw_oss.docker_stack
+    - role: Frachtwerk.docker_stack
+      diff: true
