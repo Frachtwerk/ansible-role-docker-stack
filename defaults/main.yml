@@ -9,6 +9,7 @@ docker_portainer_image: portainer/portainer-ce
 # renovate: depName=portainer/portainer
 docker_portainer_version: "2.27.8"
 docker_portainer_parameter: "" # e.g.--logo
+docker_portainer_healthcheck: {}  # See README
 # -- traefik -------------------
 # renovate: depName=traefik
 docker_traefik_version: "v2.11"
