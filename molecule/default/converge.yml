@@ -39,5 +39,5 @@
           - name: docker
 
   roles:
-    - role: Frachtwerk.docker_stack
+    - role: frachtwerk.docker_stack
       diff: true
