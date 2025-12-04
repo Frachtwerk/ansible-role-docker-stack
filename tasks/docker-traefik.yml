@@ -203,16 +203,21 @@
     traefik_labels: "{{ traefik_labels | combine(traefik_auth_labels) }}"
   when: traefik_auth_labels is defined
 
+# debug
+- name: Print traefik config
+  ansible.builtin.debug:
+    msg: "version: {{ docker_traefik_version }}, networks: {{ traefik_networks }}, ports: {{ docker_traefik_ports | list }}, volumes: {{ traefik_volumes }}, labels: {{ traefik_labels }}, env: {{ docker_traefik_custom_environment }}."
+
 # start traefik
 - name: Start Traefik
   community.docker.docker_container:
     name: traefik
     image: "traefik:{{ docker_traefik_version }}"
-    userns_mode: "host"
-    pull: true
-    state: started
-    restart: "{{ docker_traefik_force_restart }}"
-    restart_policy: always
+    # userns_mode: "host"
+    # pull: true
+    # state: started
+    # restart: "{{ docker_traefik_force_restart }}"
+    # restart_policy: always
     comparisons:
       "*": strict
       networks: allow_more_present
