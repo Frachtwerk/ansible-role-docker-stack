@@ -224,7 +224,7 @@
     networks: "{{ traefik_networks }}"
     # purge_networks: true
     ports: "{{ docker_traefik_ports | list }}"
-    volumes: "{{ traefik_volumes }}"
+    # volumes: "{{ traefik_volumes }}"
     labels: "{{ traefik_labels }}"
     env: "{{ docker_traefik_custom_environment }}"
     healthcheck:
