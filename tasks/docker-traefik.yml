@@ -16,7 +16,7 @@
 
 - name: Create data directory with parent directories
   ansible.builtin.file:
-    path: "{{ docker_traefik_path }}/data/"
+    path: "{{ docker_traefik_path }}data/"
     state: directory
     owner: "{{ docker_traefik_dynamic_user }}"
     group: "{{ docker_traefik_dynamic_group }}"
@@ -24,7 +24,7 @@
 
 - name: Create acme.json with correct permissions
   ansible.builtin.file:
-    path: "{{ docker_traefik_path }}/data/acme.json"
+    path: "{{ docker_traefik_path }}data/acme.json"
     state: touch
     owner: "{{ docker_traefik_dynamic_user }}"
     group: "{{ docker_traefik_dynamic_group }}"
@@ -82,7 +82,7 @@
 - name: Generate and copy traefik.yml
   ansible.builtin.template:
     src: "traefik/traefik.yml.j2"
-    dest: "{{ docker_traefik_path }}/config/traefik.yml"
+    dest: "{{ docker_traefik_path }}config/traefik.yml"
     owner: "{{ docker_traefik_dynamic_user }}"
     group: "{{ docker_traefik_dynamic_group }}"
     mode: "0644"
@@ -91,7 +91,7 @@
 - name: Generate and copy default.yml
   ansible.builtin.template:
     src: "traefik/default.yml.j2"
-    dest: "{{ docker_traefik_path }}/config/dynamic/default.yml"
+    dest: "{{ docker_traefik_path }}config/dynamic/default.yml"
     owner: "{{ docker_traefik_dynamic_user }}"
     group: "{{ docker_traefik_dynamic_group }}"
     mode: "0644"
@@ -100,7 +100,7 @@
 - name: Generate and copy additional non docker services
   ansible.builtin.template:
     src: "traefik/service.yml.j2"
-    dest: "{{ docker_traefik_path }}/config/dynamic/{{ service_item.name }}.yml"
+    dest: "{{ docker_traefik_path }}config/dynamic/{{ service_item.name }}.yml"
     owner: "{{ docker_traefik_dynamic_user }}"
     group: "{{ docker_traefik_dynamic_group }}"
     mode: "0644"
@@ -132,13 +132,13 @@
     traefik_volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - "{{ docker_traefik_path }}/config/traefik.yml:/traefik.yml:ro"
-      - "{{ docker_traefik_path }}/config/dynamic:/config/dynamic"
+      - "{{ docker_traefik_path }}config/traefik.yml:/traefik.yml:ro"
+      - "{{ docker_traefik_path }}config/dynamic:/config/dynamic"
 
 - name: Add volume for ACME
   ansible.builtin.set_fact:
     traefik_cert_volumes:
-      - "{{ docker_traefik_path }}/data/acme.json:/acme.json:rw"
+      - "{{ docker_traefik_path }}data/acme.json:/acme.json:rw"
   when: docker_traefik_enable_acme | bool
 
 - name: Add volumes for local certs
