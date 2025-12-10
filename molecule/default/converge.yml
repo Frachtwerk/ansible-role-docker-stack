@@ -3,12 +3,6 @@
   hosts: all
   become: true
 
-  vars:
-    # docker_install_traefik: true
-    # docker_install_watchtower: true
-    # docker_install_portainer: true
-    # docker_install_portainer_agent: true
-
   pre_tasks:
     - name: Update apt cache.
       ansible.builtin.apt:
