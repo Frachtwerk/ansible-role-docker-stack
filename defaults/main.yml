@@ -48,3 +48,10 @@ watchtower_notification_service: "shoutrrr"
 watchtower_notification_url: ""
 # --
 docker_logins: []
+# -- fluentbit -----------------
+docker_fluentbit_image: "fluent/fluent-bit"
+# renovate: depName=fluent/fluent-bit
+docker_fluentbit_version: "1.9.10"
+docker_fluentbit_loki_host: "localhost"
+docker_fluentbit_loki_port: "3100"
+docker_install_fluentbit: false
