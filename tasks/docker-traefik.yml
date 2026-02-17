@@ -34,7 +34,8 @@
 
 - name: Add traefik endpoint ports
   ansible.builtin.set_fact:
-    docker_traefik_ports: "{{ docker_traefik_ports + ['80:80', '443:443'] }}"
+    docker_traefik_ports: "{{ docker_traefik_ports
+      + [docker_traefik_ip_address + ':80:80', docker_traefik_ip_address + ':443:443'] }}"
     # ToDo: use Variables for traefik endpoint ports
 
 - name: Merge docker_traefik_ports and docker_traefik_additional_entrypoints
