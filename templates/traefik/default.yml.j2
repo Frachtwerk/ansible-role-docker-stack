@@ -29,7 +29,7 @@ tls:
 http:
   routers:
     dashboard:
-      rule: Host(`{{ docker_traefik_root_url }}`) && (PathPrefix(`/api`) || PathPrefix(`/outpost.goauthentik.io/`) || PathPrefix(`/dashboard`))
+      rule: Host(`{{ docker_traefik_root_url }}`) && (Path(`/`) || (PathPrefix(`/api`) || PathPrefix(`/outpost.goauthentik.io/`) || PathPrefix(`/dashboard`))
       service: "api@internal"
       middlewares:
 {% if middleware_auth_proxy is defined %}
