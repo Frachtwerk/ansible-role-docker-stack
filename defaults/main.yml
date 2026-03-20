@@ -35,7 +35,7 @@ docker_traefik_https_enabled: true
 docker_traefik_metrics: false
 docker_traefik_metrics_external: false
 docker_traefik_root_url: "{{ inventory_hostname }}"
-docker_traefik_dynamic_user: root
+docker_traefik_dynamic_user: root  # for e.g user namespace remapping
 docker_traefik_dynamic_group: root
 docker_traefik_force_restart: false
 docker_traefik_wildcard_list: []
@@ -44,12 +44,17 @@ docker_traefik_dns_provider: ""
 docker_traefik_dns_resolvers: []
 docker_traefik_dns_delay: "20"
 # -- watchtower -----------------
+docker_watchtower_path: "/opt/watchtower"
+docker_watchtower_dynamic_user: root
+docker_watchtower_dynamic_group: root
 watchtower_timezone: "Europe/Berlin"
 watchtower_poll_interval: ""  # in seconds
 watchtower_schedule: "0 30 4 * * 2,4"  # Every Tuesday and Thursday at 4:30:00
 watchtower_enable_api: false  # to manualy trigger updates
 watchtower_api_token:  # set me please
-watchtower_notification_service: "shoutrrr"
-watchtower_notification_url: ""
+# watchtower_notification_service: "shoutrrr"
+watchtower_notification_url: []
+watchtower_notifications_hostname: "{{ inventory_hostname }}"
+watchtower_disabled_containers_list: []  # Regex patterns are supported
 # --
 docker_logins: []
