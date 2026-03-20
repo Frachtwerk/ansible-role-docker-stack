@@ -44,8 +44,11 @@ docker_traefik_dns_provider: ""
 docker_traefik_dns_resolvers: []
 docker_traefik_dns_delay: "20"
 # -- watchtower -----------------
-watchtower_poll_interval: "3600"
-watchtower_schedule: ""
+watchtower_timezone: "Europe/Berlin"
+watchtower_poll_interval: ""  # in seconds
+watchtower_schedule: "0 30 4 * * 2,4"  # Every Tuesday and Thursday at 4:30:00
+watchtower_enable_api: false  # to manualy trigger updates
+watchtower_api_token:  # set me please
 watchtower_notification_service: "shoutrrr"
 watchtower_notification_url: ""
 # --
