@@ -15,11 +15,14 @@
     watchtower_volumes: "{{ watchtower_volumes + ['/root/.docker/config.json:/config.json'] }}"
   when: docker_config_file.stat.exists
 
-- name: Append notification_env to env's
-  ansible.builtin.set_fact:
-    watchtower_env: "{{ watchtower_env | combine(notification_env) }}"
+- name: Create directory for storing env-file
+  ansible.builtin.file:
+    path: "{{ docker_watchtower_path }}"
+    state: directory
+    recurse: true
+    owner: "{{ docker_watchtower_dynamic_user }}"
+    group: "{{ docker_watchtower_dynamic_group }}"
 
-# copy configuration
 - name: Generate and copy env file
   ansible.builtin.template:
     src: "watchtower_env.j2"

@@ -54,10 +54,7 @@ WATCHTOWER_HTTP_API_TOKEN={{ docker_watchtower_api_token }}
 
 # Notifications:
 {% if docker_watchtower_notification_url | length %}
-WATCHTOWER_NOTIFICATION_URL:
-{% for url in docker_watchtower_notification_url %}
-  - {{ url }}
-{% endfor %}
+WATCHTOWER_NOTIFICATION_URL={{ docker_watchtower_notification_url | join(', ') }}
 {% endif %}
 WATCHTOWER_NOTIFICATION_SPLIT_BY_CONTAINER=false
 
