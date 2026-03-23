@@ -193,6 +193,7 @@ docker_watchtower_notification_title_tag: "{{ inventory_hostname }}"
 docker_watchtower_disabled_containers_list: []  # Regex patterns are supported
 docker_watchtower_log_level: info  # panic, fatal, error, warn, info, debug, trace
 docker_watchtower_log_format: Auto  # Auto, LogFmt, Pretty, JSON
+docker_watchtower_rolling_restart: false
 
 ############
 # Metrics  #
