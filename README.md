@@ -97,9 +97,8 @@ Depending on what loadout you wanna achieve:
         docker_watchtower_timezone: "Europe/Berlin"
         docker_watchtower_poll_interval: "7200"  # every 2h
         docker_watchtower_notification_url:
-          - "chat.myservice/hook/12345"
-          - "smtp://user@example.com:secret@smtp.example.com:587/?fromaddress=sender@example.com\
-            &toaddresses=recipient@example.com&encryption=ExplicitTLS&usestarttls=yes"
+          - generic://chat.myservice.io/hook/12345?template=json&ContentType=application/json&messagekey=text&titlekey=username
+          - smtp://user@example.com:secret@smtp.example.com:587/?fromaddress=sender@example.com&toaddresses=recipient@example.com&encryption=ExplicitTLS&usestarttls=yes
         docker_watchtower_disabled_containers_list:
           - myservice
       roles:
