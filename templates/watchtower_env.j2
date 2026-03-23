@@ -1,15 +1,15 @@
 # env file for watchtower
-TZ={{ watchtower_timezone }}
-WATCHTOWER_LOG_LEVEL=info  # panic, fatal, error, warn, info, debug, trace
-WATCHTOWER_LOG_FORMAT=Auto  # Auto, LogFmt, Pretty, JSON
+TZ={{ docker_watchtower_timezone }}
+WATCHTOWER_LOG_LEVEL={{ docker_watchtower_log_level }}
+WATCHTOWER_LOG_FORMAT={{ docker_watchtower_log_format }}
 NO_COLOR=false
 WATCHTOWER_RUN_ONCE=false
 WATCHTOWER_UPDATE_ON_START=false
-{% if watchtower_schedule | length %}
-WATCHTOWER_SCHEDULE={{ watchtower_schedule }}
+{% if docker_watchtower_schedule | length and not docker_watchtower_poll_interval | length %}
+WATCHTOWER_SCHEDULE={{ docker_watchtower_schedule }}
 {% endif %}
-{% if watchtower_poll_interval | length %}
-WATCHTOWER_POLL_INTERVAL={{ watchtower_poll_interval }}
+{% if docker_watchtower_poll_interval | length %}
+WATCHTOWER_POLL_INTERVAL={{ docker_watchtower_poll_interval }}
 {% endif %}
 WATCHTOWER_INCLUDE_STOPPED=false
 WATCHTOWER_REVIVE_STOPPED=false
@@ -20,11 +20,12 @@ WATCHTOWER_CLEANUP=false
 WATCHTOWER_REMOVE_VOLUMES=false
 WATCHTOWER_MONITOR_ONLY=false
 WATCHTOWER_NO_PULL=false
-# TODO:
+{% if docker_watchtower_enable_labels | bool %}
 WATCHTOWER_LABEL_ENABLE=false
 WATCHTOWER_LABEL_TAKE_PRECEDENCE=false
-{% if watchtower_disabled_containers_list | length %}
-WATCHTOWER_DISABLE_CONTAINERS={{ watchtower_disabled_containers_list | join(', ') }}
+{% endif %}
+{% if docker_watchtower_disabled_containers_list | length %}
+WATCHTOWER_DISABLE_CONTAINERS={{ docker_watchtower_disabled_containers_list | join(', ') }}
 {% endif %}
 # WATCHTOWER_SCOPE
 # REPO_USER
@@ -40,11 +41,11 @@ WATCHTOWER_REGISTRY_TLS_SKIP=false
 # DOCKER_TLS_VERIFY=false
 # WATCHTOWER_DISABLE_MEMORY_SWAPPINESS=false
 # WATCHTOWER_CPU_COPY_MODE=auto  # auto, full, none
-{% if watchtower_enable_api | bool %}
+{% if docker_watchtower_enable_api | bool %}
 WATCHTOWER_HTTP_API_PERIODIC_POLLS=true
 WATCHTOWER_HTTP_API_UPDATE=true
-{% if watchtower_api_token | length %}
-WATCHTOWER_HTTP_API_TOKEN={{ watchtower_api_token }}
+{% if docker_watchtower_api_token | length %}
+WATCHTOWER_HTTP_API_TOKEN={{ docker_watchtower_api_token }}
 {% endif %}
 # WATCHTOWER_HTTP_API_METRICS=false  # Prometheus
 # WATCHTOWER_HTTP_API_HOST=
@@ -52,9 +53,9 @@ WATCHTOWER_HTTP_API_TOKEN={{ watchtower_api_token }}
 {% endif %}
 
 # Notifications:
-{% if watchtower_notification_url | length %}
+{% if docker_watchtower_notification_url | length %}
 WATCHTOWER_NOTIFICATION_URL:
-{% for url in watchtower_notification_url %}
+{% for url in docker_watchtower_notification_url %}
   - {{ url }}
 {% endfor %}
 {% endif %}
@@ -89,12 +90,11 @@ WATCHTOWER_NOTIFICATION_SPLIT_BY_CONTAINER=false
 
 WATCHTOWER_NO_STARTUP_MESSAGE=false
 
-WATCHTOWER_NOTIFICATIONS_HOSTNAME={{ watchtower_notifications_hostname }}
+WATCHTOWER_NOTIFICATIONS_HOSTNAME={{ docker_watchtower_notifications_hostname }}
 # WATCHTOWER_NOTIFICATIONS_DELAY=
-# WATCHTOWER_NOTIFICATION_TITLE_TAG=
+WATCHTOWER_NOTIFICATION_TITLE_TAG={{ docker_watchtower_notification_title_tag }}
 WATCHTOWER_NOTIFICATION_SKIP_TITLE=false
 WATCHTOWER_NOTIFICATION_LOG_STDOUT=false
-
 
 WATCHTOWER_TIMEOUT=30s
 # WATCHTOWER_LIFECYCLE_UID=
