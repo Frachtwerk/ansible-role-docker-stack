@@ -15,50 +15,6 @@
     watchtower_volumes: "{{ watchtower_volumes + ['/root/.docker/config.json:/config.json'] }}"
   when: docker_config_file.stat.exists
 
-# - name: Create default env's
-#   ansible.builtin.set_fact:
-#     watchtower_env:
-#       TZ: "{{ watchtower_timezone }}"
-#       WATCHTOWER_NOTIFICATIONS_HOSTNAME: "{{ inventory_hostname }}"
-#       WATCHTOWER_NOTIFICATION_TITLE_TAG: "{{ inventory_hostname }}"
-
-# - name: Set WATCHTOWER_POLL_INTERVAL
-#   ansible.builtin.set_fact:
-#     scheduling_env:
-#       WATCHTOWER_POLL_INTERVAL: "{{ watchtower_poll_interval | string }}"
-#   when: not watchtower_schedule | length > 0
-
-# - name: Set WATCHTOWER_SCHEDULE
-#   ansible.builtin.set_fact:
-#     scheduling_env:
-#       WATCHTOWER_SCHEDULE: "{{ watchtower_schedule }}"
-#   when: watchtower_schedule | length > 0
-
-# - name: Append scheduling_env to env's
-#   ansible.builtin.set_fact:
-#     watchtower_env: "{{ watchtower_env | combine(scheduling_env) }}"
-
-# - name: Set mail notifications
-#   ansible.builtin.set_fact:
-#     notification_env:
-#       WATCHTOWER_NOTIFICATIONS: "email"
-#       WATCHTOWER_NOTIFICATION_EMAIL_FROM: "{{ watchtower_notification_email_from }}"
-#       WATCHTOWER_NOTIFICATION_EMAIL_TO: "{{ watchtower_notification_email_to }}"
-#       WATCHTOWER_NOTIFICATION_EMAIL_SERVER: "{{ watchtower_notification_email_server }}"
-#       WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT: "{{ watchtower_notification_email_server_port }}"
-#       WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER: "{{ watchtower_notification_email_server_user }}"
-#       WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD: "{{ watchtower_notification_email_server_password }}"
-#       WATCHTOWER_NOTIFICATION_EMAIL_DELAY: "{{ watchtower_notification_email_delay }}"
-#       WATCHTOWER_NOTIFICATION_EMAIL_SUBJECTTAG: "{{ inventory_hostname }}"
-#   when: watchtower_notification_service == 'email'
-
-# - name: Set shoutrrr notifications
-#   ansible.builtin.set_fact:
-#     notification_env:
-#       WATCHTOWER_NOTIFICATIONS: "{{ watchtower_notification_service }}"
-#       WATCHTOWER_NOTIFICATION_URL: "{{ watchtower_notification_url }}"
-#   when: watchtower_notification_url is defined and watchtower_notification_service != 'email'
-
 - name: Append notification_env to env's
   ansible.builtin.set_fact:
     watchtower_env: "{{ watchtower_env | combine(notification_env) }}"
@@ -86,5 +42,3 @@
     restart_policy: unless-stopped
     volumes: "{{ watchtower_volumes }}"
     env_file: "{{ docker_watchtower_path }}/.env"
-    labels:
-      "com.centurylinklabs.watchtower.enable": "false"
