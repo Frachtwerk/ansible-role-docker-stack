@@ -44,6 +44,12 @@ Depending on what loadout you wanna achieve:
         docker_install_watchtower: true
         docker_install_portainer: true
         docker_install_portainer_agent: true
+        docker_portainer_healthcheck:
+          test: "wget --no-verbose --no-check-certificate --tries=1 --spider https://localhost:9443 || exit 1"
+          interval: 30s
+          timeout: 5s
+          retries: 3
+          start_period: 20s
       roles:
         - ansible_role_docker_stack
 ```

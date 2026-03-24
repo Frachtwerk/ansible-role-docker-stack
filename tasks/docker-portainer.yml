@@ -55,3 +55,4 @@
     volumes: "{{ portainer_volumes }}"
     state: started
     labels: "{{ portainer_labels | default({}) }}"
+    healthcheck: "{{ docker_portainer_healthcheck }}"

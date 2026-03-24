@@ -9,7 +9,7 @@
     security_opts:
       - no-new-privileges:true
     ports:
-      - 9001:9001
+      - "{{ docker_portainer_ip_address }}:9001:9001"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
