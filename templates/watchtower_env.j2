@@ -1,0 +1,98 @@
+# env file for watchtower
+TZ={{ docker_watchtower_timezone }}
+WATCHTOWER_LOG_LEVEL={{ docker_watchtower_log_level }}
+WATCHTOWER_LOG_FORMAT={{ docker_watchtower_log_format }}
+NO_COLOR=false
+WATCHTOWER_RUN_ONCE=false
+WATCHTOWER_UPDATE_ON_START=false
+{% if docker_watchtower_schedule | length and not docker_watchtower_poll_interval | length %}
+WATCHTOWER_SCHEDULE={{ docker_watchtower_schedule }}
+{% endif %}
+{% if docker_watchtower_poll_interval | length %}
+WATCHTOWER_POLL_INTERVAL={{ docker_watchtower_poll_interval }}
+{% endif %}
+WATCHTOWER_INCLUDE_STOPPED=false
+WATCHTOWER_REVIVE_STOPPED=false
+WATCHTOWER_INCLUDE_RESTARTING=false
+WATCHTOWER_NO_RESTART=false
+WATCHTOWER_ROLLING_RESTART={{ docker_watchtower_rolling_restart }}
+WATCHTOWER_CLEANUP=false
+WATCHTOWER_REMOVE_VOLUMES=false
+WATCHTOWER_MONITOR_ONLY=false
+WATCHTOWER_NO_PULL=false
+{% if docker_watchtower_enable_labels | bool %}
+WATCHTOWER_LABEL_ENABLE=false
+WATCHTOWER_LABEL_TAKE_PRECEDENCE=false
+{% endif %}
+{% if docker_watchtower_disabled_containers_list | length %}
+WATCHTOWER_DISABLE_CONTAINERS={{ docker_watchtower_disabled_containers_list | join(', ') }}
+{% endif %}
+# WATCHTOWER_SCOPE
+# REPO_USER
+# REPO_PASS
+# DOCKER_CONFIG
+WATCHTOWER_REGISTRY_TLS_SKIP=false
+# WATCHTOWER_REGISTRY_TLS_MIN_VERSION=
+# HTTP_PROXY
+# HTTPS_PROXY
+# NO_PROXY
+# WATCHTOWER_WARN_ON_HEAD_FAILURE=auto  # always, auto, never
+# DOCKER_HOST=unix:///var/run/docker.sock
+# DOCKER_TLS_VERIFY=false
+# WATCHTOWER_DISABLE_MEMORY_SWAPPINESS=false
+# WATCHTOWER_CPU_COPY_MODE=auto  # auto, full, none
+{% if docker_watchtower_enable_api | bool %}
+WATCHTOWER_HTTP_API_PERIODIC_POLLS=true
+WATCHTOWER_HTTP_API_UPDATE=true
+{% if docker_watchtower_api_token | length %}
+WATCHTOWER_HTTP_API_TOKEN={{ docker_watchtower_api_token }}
+{% endif %}
+# WATCHTOWER_HTTP_API_METRICS=false  # Prometheus
+# WATCHTOWER_HTTP_API_HOST=
+# WATCHTOWER_HTTP_API_PORT=8080
+{% endif %}
+
+# Notifications:
+{% if docker_watchtower_notification_url | length %}
+WATCHTOWER_NOTIFICATION_URL={{ docker_watchtower_notification_url | join(', ') }}
+{% endif %}
+WATCHTOWER_NOTIFICATION_SPLIT_BY_CONTAINER=false
+
+{# not implemented. open a feature request:
+
+# WATCHTOWER_NOTIFICATIONS=  # email, slack, msteams, gotify
+
+# legacy email config:
+# WATCHTOWER_NOTIFICATION_EMAIL_SERVER=
+# WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT=
+# WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER=
+# WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD=
+# WATCHTOWER_NOTIFICATION_EMAIL_FROM=
+# WATCHTOWER_NOTIFICATION_EMAIL_TO=
+# WATCHTOWER_NOTIFICATION_EMAIL_DELAY=
+
+# WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL=
+# WATCHTOWER_NOTIFICATION_SLACK_IDENTIFIER=
+# WATCHTOWER_NOTIFICATION_SLACK_CHANNEL=
+
+# WATCHTOWER_NOTIFICATION_MSTEAMS_HOOK=
+# WATCHTOWER_NOTIFICATION_MSTEAMS_USE_LOG_DATA=
+
+# WATCHTOWER_NOTIFICATION_GOTIFY_URL=
+# WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=
+#}
+
+# WATCHTOWER_NOTIFICATION_TEMPLATE=
+# WATCHTOWER_NOTIFICATION_TEMPLATE_FILE=
+
+WATCHTOWER_NO_STARTUP_MESSAGE=false
+
+WATCHTOWER_NOTIFICATIONS_HOSTNAME={{ docker_watchtower_notifications_hostname }}
+# WATCHTOWER_NOTIFICATIONS_DELAY=
+WATCHTOWER_NOTIFICATION_TITLE_TAG={{ docker_watchtower_notification_title_tag }}
+WATCHTOWER_NOTIFICATION_SKIP_TITLE=false
+WATCHTOWER_NOTIFICATION_LOG_STDOUT=false
+
+WATCHTOWER_TIMEOUT=30s
+# WATCHTOWER_LIFECYCLE_UID=
+# WATCHTOWER_LIFECYCLE_GID=

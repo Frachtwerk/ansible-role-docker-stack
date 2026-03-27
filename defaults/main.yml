@@ -35,7 +35,7 @@ docker_traefik_https_enabled: true
 docker_traefik_metrics: false
 docker_traefik_metrics_external: false
 docker_traefik_root_url: "{{ inventory_hostname }}"
-docker_traefik_dynamic_user: root
+docker_traefik_dynamic_user: root  # for e.g user namespace remapping
 docker_traefik_dynamic_group: root
 docker_traefik_force_restart: false
 docker_traefik_wildcard_list: []
@@ -44,9 +44,21 @@ docker_traefik_dns_provider: ""
 docker_traefik_dns_resolvers: []
 docker_traefik_dns_delay: "20"
 # -- watchtower -----------------
-watchtower_poll_interval: "3600"
-watchtower_schedule: ""
-watchtower_notification_service: "shoutrrr"
-watchtower_notification_url: ""
+docker_watchtower_path: "/opt/watchtower"
+docker_watchtower_dynamic_user: root
+docker_watchtower_dynamic_group: root
+docker_watchtower_timezone: "Europe/Berlin"
+docker_watchtower_poll_interval: ""  # in seconds
+docker_watchtower_schedule: "0 30 4 * * 2,4"  # Every Tuesday and Thursday at 4:30:00
+docker_watchtower_enable_labels: false  # "com.centurylinklabs.watchtower.enable: true"
+docker_watchtower_api_token:
+docker_watchtower_enable_api: false  # to manualy trigger updates
+docker_watchtower_notification_url: []
+docker_watchtower_notifications_hostname: "{{ inventory_hostname }}"
+docker_watchtower_notification_title_tag: "{{ inventory_hostname }}"
+docker_watchtower_disabled_containers_list: []  # Regex patterns are supported
+docker_watchtower_log_level: info  # panic, fatal, error, warn, info, debug, trace
+docker_watchtower_log_format: Auto  # Auto, LogFmt, Pretty, JSON
+docker_watchtower_rolling_restart: false
 # --
 docker_logins: []

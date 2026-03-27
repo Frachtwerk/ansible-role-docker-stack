@@ -94,9 +94,13 @@ Depending on what loadout you wanna achieve:
       become: true
       vars:
         docker_install_watchtower: true
-        watchtower_schedule: "0 0 3 1,3 * *"
-        watchtower_notification_service: "shoutrrr"
-        watchtower_notification_url: "chat.myservice/hook/12345"
+        docker_watchtower_timezone: "Europe/Berlin"
+        docker_watchtower_poll_interval: "7200"  # every 2h
+        docker_watchtower_notification_url:
+          - generic://chat.myservice.io/hook/12345?template=json&ContentType=application/json&messagekey=text&titlekey=username
+          - smtp://user@example.com:secret@smtp.example.com:587/?fromaddress=sender@example.com&toaddresses=recipient@example.com&encryption=ExplicitTLS&usestarttls=yes
+        docker_watchtower_disabled_containers_list:
+          - myservice
       roles:
         - ansible_role_docker_stack
 ```
@@ -173,19 +177,22 @@ docker_traefik_certs_key_file: ""
 # watchtower  #
 ###############
 
-watchtower_poll_interval: "3600"
-watchtower_schedule: "0 0 22 * * *"
-watchtower_notification_service: "shoutrrr"
-watchtower_notification_url: ""
-watchtower_notification_service: [email, shoutrrr]
-watchtower_notification_email_from: ""
-watchtower_notification_email_to: ""
-watchtower_notification_email_server: ""
-watchtower_notification_email_server_port: ""
-watchtower_notification_email_server_user: ""
-watchtower_notification_email_server_password: ""
-watchtower_notification_email_delay: ""
-watchtower_notification_url: ""
+docker_watchtower_path: "/opt/watchtower"
+docker_watchtower_dynamic_user: root  # for e.g user namespace remapping
+docker_watchtower_dynamic_group: root
+docker_watchtower_timezone: "Europe/Berlin"
+docker_watchtower_poll_interval: ""  # in seconds
+docker_watchtower_schedule: "0 30 4 * * 2,4"  # Every Tuesday and Thursday at 4:30:00
+docker_watchtower_enable_labels: false  # "com.centurylinklabs.watchtower.enable: true"
+docker_watchtower_api_token:
+docker_watchtower_enable_api: false  # to manualy trigger updates
+docker_watchtower_notification_url: []
+docker_watchtower_notifications_hostname: "{{ inventory_hostname }}"
+docker_watchtower_notification_title_tag: "{{ inventory_hostname }}"
+docker_watchtower_disabled_containers_list: []  # Regex patterns are supported
+docker_watchtower_log_level: info  # panic, fatal, error, warn, info, debug, trace
+docker_watchtower_log_format: Auto  # Auto, LogFmt, Pretty, JSON
+docker_watchtower_rolling_restart: false
 
 ############
 # Metrics  #
