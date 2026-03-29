@@ -62,3 +62,10 @@ docker_watchtower_log_format: Auto  # Auto, LogFmt, Pretty, JSON
 docker_watchtower_rolling_restart: false
 # --
 docker_logins: []
+# -- fluentbit -----------------
+docker_fluentbit_image: "fluent/fluent-bit"
+# renovate: depName=fluent/fluent-bit
+docker_fluentbit_version: "1.9.10"
+docker_fluentbit_loki_host: "localhost"
+docker_fluentbit_loki_port: "3100"
+docker_install_fluentbit: false
