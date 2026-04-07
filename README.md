@@ -101,6 +101,7 @@ Depending on what loadout you wanna achieve:
           - smtp://user@example.com:secret@smtp.example.com:587/?fromaddress=sender@example.com&toaddresses=recipient@example.com&encryption=ExplicitTLS&usestarttls=yes
         docker_watchtower_disabled_containers_list:
           - myservice
+        docker_watchtower_cooldown_delay: 0  # disable security cooldown
       roles:
         - ansible_role_docker_stack
 ```
@@ -193,6 +194,7 @@ docker_watchtower_disabled_containers_list: []  # Regex patterns are supported
 docker_watchtower_log_level: info  # panic, fatal, error, warn, info, debug, trace
 docker_watchtower_log_format: Auto  # Auto, LogFmt, Pretty, JSON
 docker_watchtower_rolling_restart: false
+docker_watchtower_cooldown_delay: 12h
 
 ############
 # Metrics  #
