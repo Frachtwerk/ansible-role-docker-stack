@@ -50,5 +50,6 @@ watchtower_poll_interval: "3600"
 watchtower_schedule: ""
 watchtower_notification_service: "shoutrrr"
 watchtower_notification_url: ""
+watchtower_cooldown_delay: "24h"
 # --
 docker_logins: []

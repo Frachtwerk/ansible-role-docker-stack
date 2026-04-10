@@ -19,6 +19,7 @@
   ansible.builtin.set_fact:
     watchtower_env:
       TZ: "Europe/Berlin"
+      WATCHTOWER_COOLDOWN_DELAY: "{{ watchtower_cooldown_delay }}"
       WATCHTOWER_NOTIFICATIONS_HOSTNAME: "{{ inventory_hostname }}"
       WATCHTOWER_NOTIFICATION_TITLE_TAG: "{{ inventory_hostname }}"
 
