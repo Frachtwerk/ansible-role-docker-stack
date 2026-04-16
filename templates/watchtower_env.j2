@@ -11,6 +11,7 @@ WATCHTOWER_SCHEDULE={{ docker_watchtower_schedule }}
 {% if docker_watchtower_poll_interval | length %}
 WATCHTOWER_POLL_INTERVAL={{ docker_watchtower_poll_interval }}
 {% endif %}
+WATCHTOWER_COOLDOWN_DELAY={{ docker_watchtower_cooldown_delay }}
 WATCHTOWER_INCLUDE_STOPPED=false
 WATCHTOWER_REVIVE_STOPPED=false
 WATCHTOWER_INCLUDE_RESTARTING=false
