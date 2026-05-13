@@ -32,8 +32,8 @@ http:
       rule: Host(`{{ docker_traefik_root_url }}`) && (Path(`/`) || (PathPrefix(`/api`) || PathPrefix(`/outpost.goauthentik.io/`) || PathPrefix(`/dashboard`))
       service: "api@internal"
       middlewares:
-{% if middleware_auth_proxy is defined %}
-        - {{ middleware_auth_proxy }}
+{% if docker_traefik_forward_auth_via_authentik %}
+        - authentik-proxy-middleware
 {% endif %}
 {% if ipwhitelist | length > 0 %}
         - default-ipwhitelist
@@ -43,8 +43,8 @@ http:
 {% endif %}
         - compression
   middlewares:
-{% if middleware_auth_proxy is defined %}
-    {{ middleware_auth_proxy }}:
+{% if docker_traefik_forward_auth_via_authentik %}
+    authentik-proxy-middleware:
       forwardAuth:
         address: http://{{ middleware_auth_proxy_host }}:9000/outpost.goauthentik.io/auth/traefik
         trustForwardHeader: true
