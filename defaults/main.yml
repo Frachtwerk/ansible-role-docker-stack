@@ -11,6 +11,7 @@ docker_portainer_version: "2.33.2"
 docker_portainer_parameter: "" # e.g.--logo
 docker_portainer_healthcheck: {}  # See README
 docker_portainer_ip_address: "0.0.0.0"
+docker_portainer_root_url: ""  # enables traefik labels for portainer
 # -- traefik -------------------
 # renovate: depName=traefik
 docker_traefik_version: "v3.7.19"
@@ -23,6 +24,9 @@ docker_traefik_entrypoint_name_http: "web"
 docker_traefik_entrypoint_name_https: "websecure"
 docker_traefik_enable_stored_certs: false
 docker_traefik_enable_acme: false
+docker_traefik_acme_mail: ""
+docker_traefik_certs_crt_file: ""  # with docker_traefik_enable_stored_certs
+docker_traefik_certs_key_file: ""
 docker_traefik_enable_compression: false
 docker_traefik_enable_noindex: false
 docker_traefik_enable_headers: false
@@ -34,8 +38,11 @@ docker_traefik_trusted_proxies: []
 docker_traefik_https_enabled: true
 docker_traefik_api_enable: false
 docker_traefik_dashboard_enable: false
+docker_traefik_dashboard_basic_auth: ""  # htpasswd string or list
 docker_traefik_metrics: false
 docker_traefik_metrics_external: false
+docker_traefik_metrics_port: 8082
+docker_traefik_metrics_network: ""  # host IP (or CIDR) to bind metrics to if not external
 docker_traefik_root_url: "{{ inventory_hostname }}"
 docker_traefik_dynamic_user: root  # for e.g user namespace remapping
 docker_traefik_dynamic_group: root

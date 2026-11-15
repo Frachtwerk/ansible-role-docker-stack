@@ -1,19 +1,8 @@
 ---
-- name: Set up volume list
-  ansible.builtin.set_fact:
-    watchtower_volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-
 - name: Check if file '/root/.docker/config.json' exists.
   ansible.builtin.stat:
     path: "/root/.docker/config.json"
   register: docker_config_file
-
-- name: Set up volume list
-  ansible.builtin.set_fact:
-    watchtower_volumes: "{{ watchtower_volumes + ['/root/.docker/config.json:/config.json'] }}"
-  when: docker_config_file.stat.exists
 
 - name: Create directory for storing env-file
   ansible.builtin.file:
@@ -43,5 +32,5 @@
     pull: true
     state: started
     restart_policy: unless-stopped
-    volumes: "{{ watchtower_volumes }}"
+    volumes: "{{ _docker_watchtower_volumes }}"
     env_file: "{{ docker_watchtower_path }}/.env"

@@ -91,7 +91,7 @@ http:
           X-Robots-Tag: "noindex,nofollow,nosnippet,noarchive,noimageindex,nocache"
     compression:
       compress: { }
-{% if ipwhitelist | length  > 0 %}
+{% if _docker_traefik_ipallowlist | length > 0 %}
     default-ipwhitelist:
 {% if docker_traefik_version.replace('v', '') is version('3.0', '<') %}
       ipWhiteList:
@@ -99,7 +99,7 @@ http:
       ipAllowList:
 {% endif %}
         sourceRange:
-{% for ip in ipwhitelist %}
+{% for ip in _docker_traefik_ipallowlist %}
           - "{{ ip }}"
 {% endfor %}
 {% endif %}

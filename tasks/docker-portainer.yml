@@ -5,39 +5,6 @@
     name: "portainer"
   when: docker_install_portainer | bool and docker_install_portainer_agent | bool
 
-# Prepare network information
-- name: Create list of networks
-  ansible.builtin.set_fact:
-    portainer_networks:
-      - name: "{{ docker_traefik_network_name }}"
-      - name: "portainer"
-  when: docker_install_portainer | bool and docker_install_portainer_agent | bool
-
-- name: Create list of networks
-  ansible.builtin.set_fact:
-    portainer_networks:
-      - name: "{{ docker_traefik_network_name }}"
-  when: docker_install_portainer | bool and not docker_install_portainer_agent | bool
-
-# Prepare volume information
-- name: Create list of volumes
-  ansible.builtin.set_fact:
-    portainer_volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-      - "portainer_data:/data"
-
-# Labels
-- name: Create list of labels
-  ansible.builtin.set_fact:
-    portainer_labels:
-      traefik.enable: "true"
-      traefik.http.routers.portainer-secure.entrypoints: "{{ docker_traefik_entrypoint_name_https }}"
-      traefik.http.routers.portainer-secure.rule: "Host(`{{ docker_portainer_root_url }}`)"
-      traefik.http.routers.portainer-secure.service: "portainer"
-      traefik.http.services.portainer.loadbalancer.server.port: '9000'
-  when: docker_portainer_root_url is defined
-
 - name: Start Portainer
   community.docker.docker_container:
     name: portainer
@@ -48,11 +15,14 @@
     security_opts:
       - no-new-privileges:true
     command: "-H unix:///var/run/docker.sock {{ docker_portainer_parameter }}"
-    networks: "{{ portainer_networks }}"
+    networks: "{{ _docker_portainer_networks }}"
     ports:
       - 8000:8000
       - 9443:9443
-    volumes: "{{ portainer_volumes }}"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "portainer_data:/data"
     state: started
-    labels: "{{ portainer_labels | default({}) }}"
+    labels: "{{ _docker_portainer_labels }}"
     healthcheck: "{{ docker_portainer_healthcheck }}"

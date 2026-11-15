@@ -1,2 +1,87 @@
 ---
 # vars file for role_docker_default_stack
+# Internal, computed values. Do not override.
+
+# -- traefik -------------------
+_docker_traefik_entrypoint_port_numbers: "{{ docker_traefik_additional_entrypoints | map(attribute='port') | map('string') | list }}"
+_docker_traefik_entrypoint_ports: >-
+  {{ _docker_traefik_entrypoint_port_numbers
+     | zip(_docker_traefik_entrypoint_port_numbers) | map('join', ':')
+     | zip(docker_traefik_additional_entrypoints | map(attribute='protocol', default='tcp')) | map('join', '/')
+     | map('regex_replace', '/$', '/tcp') | list }}
+
+_docker_traefik_metrics_bind: >-
+  {{ '' if docker_traefik_metrics_external | bool else docker_traefik_metrics_network.split('/')[0] ~ ':' }}
+_docker_traefik_metrics_ports: >-
+  {{ [_docker_traefik_metrics_bind ~ docker_traefik_metrics_port ~ ':' ~ docker_traefik_metrics_port]
+     if docker_traefik_metrics | bool and (docker_traefik_metrics_external | bool or docker_traefik_metrics_network | length > 0)
+     else [] }}
+
+_docker_traefik_ports: >-
+  {{ [docker_traefik_ip_address ~ ':80:80', docker_traefik_ip_address ~ ':443:443']
+     + (['[::]:80:80', '[::]:443:443'] if docker_traefik_network_enable_ipv6 | bool else [])
+     + _docker_traefik_entrypoint_ports
+     + _docker_traefik_metrics_ports
+     + docker_traefik_ports }}
+
+_docker_traefik_ipallowlist: "{{ docker_traefik_default_ipwhitelist | unique }}"
+
+# keep networks attached to an existing container (e.g. app networks) on recreation
+_docker_traefik_networks: >-
+  {{ ([docker_traefik_network_name]
+      + (traefik_result.container.NetworkSettings.Networks.keys() | list if traefik_result.exists else []))
+     | unique | map('community.general.dict_kv', 'name') | list }}
+
+_docker_traefik_cert_volumes: >-
+  {{ [docker_traefik_path ~ '/data/acme.json:/acme.json:rw'] if docker_traefik_enable_acme | bool
+     else [docker_traefik_certs_crt_file ~ ':/cert/cert.crt:ro', docker_traefik_certs_key_file ~ ':/cert/cert.key:ro']
+       if docker_traefik_https_enabled | bool and docker_traefik_enable_stored_certs | bool
+     else [] }}
+_docker_traefik_volumes: >-
+  {{ ['/etc/localtime:/etc/localtime:ro',
+      '/var/run/docker.sock:/var/run/docker.sock:ro',
+      docker_traefik_path ~ '/config/traefik.yml:/traefik.yml:ro',
+      docker_traefik_path ~ '/config/dynamic:/config/dynamic']
+     + ([docker_traefik_path ~ '/logs:/logs'] if docker_traefik_accesslog_retention_days | int > 0 else [])
+     + _docker_traefik_cert_volumes }}
+
+_docker_traefik_basic_auth_users: >-
+  {{ docker_traefik_dashboard_basic_auth if docker_traefik_dashboard_basic_auth is string
+     else docker_traefik_dashboard_basic_auth | join(',') }}
+_docker_traefik_dashboard_middlewares: >-
+  {{ (['default-ipwhitelist@file'] if _docker_traefik_ipallowlist | length > 0 else [])
+     + (['traefik-auth@docker'] if docker_traefik_dashboard_basic_auth | length > 0 else []) }}
+_docker_traefik_dashboard_labels:
+  traefik.enable: "true"
+  traefik.http.routers.traefik.entrypoints: >-
+    {{ docker_traefik_entrypoint_name_https if docker_traefik_https_enabled | bool else docker_traefik_entrypoint_name_http }}
+  traefik.http.routers.traefik.rule: "Host(`{{ docker_traefik_root_url }}`)"
+  traefik.http.routers.traefik.service: "api@internal"
+_docker_traefik_dashboard_tls_labels:
+  traefik.http.routers.traefik.tls: "true"
+  traefik.http.routers.traefik.tls.certresolver: "leresolver"
+_docker_traefik_labels: >-
+  {{ {} if not docker_traefik_dashboard_enable | bool else
+     _docker_traefik_dashboard_labels
+     | combine(_docker_traefik_dashboard_tls_labels if docker_traefik_https_enabled | bool and docker_traefik_enable_acme | bool else {})
+     | combine({'traefik.http.routers.traefik.middlewares': _docker_traefik_dashboard_middlewares | join(',')}
+               if _docker_traefik_dashboard_middlewares | length > 0 else {})
+     | combine({'traefik.http.middlewares.traefik-auth.basicauth.users': _docker_traefik_basic_auth_users}
+               if docker_traefik_dashboard_basic_auth | length > 0 else {}) }}
+
+# -- portainer -----------------
+_docker_portainer_networks: >-
+  {{ [{'name': docker_traefik_network_name}]
+     + ([{'name': 'portainer'}] if docker_install_portainer_agent | bool else []) }}
+_docker_portainer_labels: >-
+  {{ {} if docker_portainer_root_url | length == 0 else
+     {'traefik.enable': 'true',
+      'traefik.http.routers.portainer-secure.entrypoints': docker_traefik_entrypoint_name_https,
+      'traefik.http.routers.portainer-secure.rule': 'Host(`' ~ docker_portainer_root_url ~ '`)',
+      'traefik.http.routers.portainer-secure.service': 'portainer',
+      'traefik.http.services.portainer.loadbalancer.server.port': '9000'} }}
+
+# -- watchtower -----------------
+_docker_watchtower_volumes: >-
+  {{ ['/etc/localtime:/etc/localtime:ro', '/var/run/docker.sock:/var/run/docker.sock']
+     + (['/root/.docker/config.json:/config.json'] if docker_config_file.stat.exists else []) }}

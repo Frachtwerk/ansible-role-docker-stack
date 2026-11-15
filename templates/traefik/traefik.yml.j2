@@ -100,7 +100,7 @@ entryPoints:
 
 {% if docker_traefik_metrics | bool %}
   metrics:
-    address: :{{ docker_traefik_metrics_port | default('8082') }}
+    address: :{{ docker_traefik_metrics_port }}
 
 {% endif %}
   ping:
