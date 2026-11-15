@@ -75,6 +75,7 @@ http:
         regex: "^https?://www\\.(.+)"
         replacement: "https://${1}"
         permanent: true
+{% if docker_traefik_non_docker_services | selectattr('name', 'equalto', 'errorService') | list | length > 0 %}
     errors:
       errors:
         status:
@@ -83,6 +84,7 @@ http:
           - "404"
         service: errorService
         query: "/{status}.html"
+{% endif %}
     deny_pageIndexHeader:
       headers:
         customResponseHeaders:
