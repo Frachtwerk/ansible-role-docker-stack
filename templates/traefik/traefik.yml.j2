@@ -77,7 +77,7 @@ entryPoints:
 
 {% for entrypoint in docker_traefik_additional_entrypoints %}
   {{ entrypoint.name }}:
-  address: :{{ entrypoint.port }}/{{ protocol | default('tcp') }}
+    address: :{{ entrypoint.port }}/{{ entrypoint.protocol | default('tcp', true) }}
 {% if entrypoint.http | default('false') | bool %}
     http:
 {% if entrypoint.ssl | default('false') | bool %}
@@ -89,15 +89,15 @@ entryPoints:
 {% endif %}
 {% endif %}
       middlewares:
-        -  set_basicHeaders@file
-{% if entrypoint.headers|bool %}
+        - set_basicHeaders@file
+{% if entrypoint.headers | default(false) | bool %}
         - set_XforwardHeader@file
         - deny_allReferrerPolicy@file
 {% endif %}
-{% if entrypoint.noindex|bool %}
+{% if entrypoint.noindex | default(false) | bool %}
         - deny_pageIndexHeader@file
 {% endif %}
-{% if entrypoint.compression | bool %}
+{% if entrypoint.compression | default(false) | bool %}
         - compression@file
 {% endif %}
 {% endif %}

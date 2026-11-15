@@ -1,7 +1,7 @@
 ---
 - name: Create string
   ansible.builtin.set_fact:
-    port_string: "{{ entrypoint.port }}{{ ':' }}{{ entrypoint.port }}/{{ entrypoint.protocol }}"
+    port_string: "{{ entrypoint.port }}{{ ':' }}{{ entrypoint.port }}/{{ entrypoint.protocol | default('tcp', true) }}"
 
 - name: Create port mapping for traefik docker configuration
   ansible.builtin.set_fact:
