@@ -1,24 +1,24 @@
 http:
   routers:
 {% for route in service_item.routes %}
-    {{ service_item.name }}-{{ route.url |replace(".", "_") | safe }}-secured:
+    {{ service_item.name }}-{{ route.url | replace(".", "_") }}-secured:
       entryPoints:
         - {{ docker_traefik_entrypoint_name_https }}
       rule: Host(`{{ route.url }}`)
       service: {{ service_item.name }}
-{% if route.middlewares is defined and route.middleware | length > 0 %}
+{% if route.middlewares | default([]) | length > 0 %}
       middlewares:
-      {% for middleware in route.middlewares %}
+{% for middleware in route.middlewares %}
         - {{ middleware }}
-      {% endfor %}
+{% endfor %}
 {% endif %}
 {% endfor %}
 
   services:
     {{ service_item.name }}:
-    loadBalancer:
-      servers:
+      loadBalancer:
+        servers:
 {% for server in service_item.servers %}
-        - url: {{ server }}
+          - url: {{ server }}
 {% endfor %}
-      passHostHeader: true
+        passHostHeader: true

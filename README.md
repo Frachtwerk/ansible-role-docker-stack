@@ -149,9 +149,9 @@ docker_traefik_additional_entrypoints: [{
 docker_traefik_default_ipallowlist: []
 docker_traefik_non_docker_services: [{
   name: ""
-  routs: [{
+  routes: [{
     url: ""
-    middlewares: ""
+    middlewares: []
   }]
   servers: []
   traefik_default_networks: []
