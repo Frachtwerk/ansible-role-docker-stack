@@ -151,7 +151,12 @@ certificatesResolvers:
 
 log: { }
 
+{% if docker_traefik_accesslog_retention_days | int > 0 %}
+accessLog:
+  filePath: "/logs/access.log"
+{% else %}
 accessLog: { }
+{% endif %}
 
 {% if docker_traefik_metrics | bool %}
 metrics:

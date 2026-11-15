@@ -45,6 +45,8 @@ docker_traefik_dns_challenge: false
 docker_traefik_dns_provider: ""
 docker_traefik_dns_resolvers: []
 docker_traefik_dns_delay: "20"
+# 0 = access log to stdout (docker log); >0 = file with daily logrotate, keep n days
+docker_traefik_accesslog_retention_days: 0
 # -- watchtower -----------------
 docker_watchtower_path: "/opt/watchtower"
 docker_watchtower_dynamic_user: root

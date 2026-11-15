@@ -169,6 +169,7 @@ docker_traefik_dns_challenge: false
 docker_traefik_dns_provider: ""
 docker_traefik_dns_resolvers: []
 docker_traefik_dns_delay: "20"
+docker_traefik_accesslog_retention_days: 0 # >0: access log in {{ docker_traefik_path }}/logs, rotated daily, kept n days
 docker_traefik_default_ipwhitelist: []
 docker_traefik_dashboard_basic_auth: []
 docker_traefik_certs_crt_file: ""

@@ -32,7 +32,49 @@
     access_time: preserve
     modification_time: preserve
 
-- name: Add traefik endpoint ports
+- name: Create access log directory
+  ansible.builtin.file:
+    path: "{{ docker_traefik_path }}/logs/"
+    state: directory
+    owner: "{{ docker_traefik_dynamic_user }}"
+    group: "{{ docker_traefik_dynamic_group }}"
+    mode: "0750"
+  when: docker_traefik_accesslog_retention_days | int > 0
+
+- name: Install logrotate
+  ansible.builtin.package:
+    name: logrotate
+    state: present
+  when: docker_traefik_accesslog_retention_days | int > 0
+
+- name: Configure logrotate for traefik access log
+  ansible.builtin.copy:
+    dest: /etc/logrotate.d/traefik
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      {{ docker_traefik_path }}/logs/access.log {
+        daily
+        rotate {{ docker_traefik_accesslog_retention_days }}
+        maxage {{ docker_traefik_accesslog_retention_days }}
+        missingok
+        notifempty
+        compress
+        delaycompress
+        postrotate
+          docker kill --signal=USR1 traefik >/dev/null 2>&1 || true
+        endscript
+      }
+  when: docker_traefik_accesslog_retention_days | int > 0
+
+- name: Remove logrotate config for traefik access log
+  ansible.builtin.file:
+    path: /etc/logrotate.d/traefik
+    state: absent
+  when: docker_traefik_accesslog_retention_days | int == 0
+
+- name: Add traefik endpoint ports (IPv4)
   ansible.builtin.set_fact:
     docker_traefik_ports: "{{ docker_traefik_ports
       + [docker_traefik_ip_address + ':80:80', docker_traefik_ip_address + ':443:443'] }}"
@@ -140,6 +182,11 @@
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - "{{ docker_traefik_path }}/config/traefik.yml:/traefik.yml:ro"
       - "{{ docker_traefik_path }}/config/dynamic:/config/dynamic"
+
+- name: Add volume for access log
+  ansible.builtin.set_fact:
+    traefik_volumes: "{{ traefik_volumes + [docker_traefik_path + '/logs:/logs'] }}"
+  when: docker_traefik_accesslog_retention_days | int > 0
 
 - name: Add volume for ACME
   ansible.builtin.set_fact:
