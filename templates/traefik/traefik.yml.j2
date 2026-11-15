@@ -44,19 +44,14 @@ entryPoints:
 {% if docker_traefik_enable_acme | bool %}
       tls:
         certResolver: leresolver
-{% if docker_traefik_wildcard_list | length > 0 %}
+{% set wildcards = (docker_traefik_wildcard_list + [docker_traefik_wildcard | default('')]) | select | unique | list %}
+{% if wildcards | length > 0 %}
         domains:
-{% for wildcard in docker_traefik_wildcard_list %}
+{% for wildcard in wildcards %}
           - main: "{{ wildcard }}"
             sans:
               - "*.{{ wildcard }}"
 {% endfor %}
-{% endif %}
-{% if docker_traefik_wildcard is defined and docker_traefik_wildcard | length > 0 %}
-        domains:
-          - main: "{{ docker_traefik_wildcard }}"
-            sans:
-              - "*.{{ docker_traefik_wildcard }}"
 {% endif %}
 {% elif docker_traefik_enable_stored_certs | bool %}
       tls: true
