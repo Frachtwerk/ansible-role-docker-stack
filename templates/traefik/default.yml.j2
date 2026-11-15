@@ -91,7 +91,11 @@ http:
       compress: { }
 {% if ipwhitelist | length  > 0 %}
     default-ipwhitelist:
-      ipwhitelist:
+{% if docker_traefik_version.replace('v', '') is version('3.0', '<') %}
+      ipWhiteList:
+{% else %}
+      ipAllowList:
+{% endif %}
         sourceRange:
 {% for ip in ipwhitelist %}
           - "{{ ip }}"

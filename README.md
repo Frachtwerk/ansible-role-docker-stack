@@ -146,7 +146,6 @@ docker_traefik_additional_entrypoints: [{
   port: ""
   protocol: ""
 }]
-docker_traefik_default_ipallowlist: []
 docker_traefik_non_docker_services: [{
   name: ""
   routes: [{
