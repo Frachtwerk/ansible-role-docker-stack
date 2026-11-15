@@ -14,6 +14,8 @@
 - name: Login into private registry
   ansible.builtin.include_tasks: docker-login.yml
   loop: "{{ docker_logins }}"
+  loop_control:
+    label: "{{ item.docker_registry_url }}"
 
 - name: Start Traefik
   ansible.builtin.include_tasks: docker-traefik.yml
