@@ -6,7 +6,7 @@ galaxy_info:
   description: Deploys Traefik, Portainer and Watchtower as default stack
   company: FW-OSS
 
-  issue_tracker_url: https://github.com/fw-oss/ansible-role-docker-stack
+  issue_tracker_url: https://github.com/Frachtwerk/ansible-role-docker-stack
 
   license: MIT
 
