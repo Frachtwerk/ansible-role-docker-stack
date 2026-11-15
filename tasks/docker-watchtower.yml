@@ -29,8 +29,8 @@
     dest: "{{ docker_watchtower_path }}/.env"
     owner: "{{ docker_watchtower_dynamic_user }}"
     group: "{{ docker_watchtower_dynamic_group }}"
-    mode: "0644"
-  diff: true
+    mode: "0600"
+  diff: false  # contains secrets
 
 - name: Start Watchtower
   become: true
