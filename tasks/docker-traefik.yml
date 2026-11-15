@@ -83,6 +83,7 @@
     group: "{{ docker_traefik_dynamic_group }}"
     mode: "0644"
   diff: true
+  notify: Restart Traefik  # static config is only read on startup
 
 - name: Generate and copy default.yml
   ansible.builtin.template:

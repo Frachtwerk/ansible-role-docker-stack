@@ -218,9 +218,6 @@ docker_logins: [{
 
 ```
 
-## Todos
-
-- [ ] toggle docker_traefik_force_restart
 
 ## License
 
