@@ -129,7 +129,7 @@ docker_portainer_parameter:
 # Traefik  #
 ############
 
-docker_traefik_version: "v2.11"
+docker_traefik_version: "v3.7.19"
 docker_traefik_path: "/opt/traefik/"
 docker_traefik_network_name: "proxy"
 docker_traefik_network_enable_ipv6: false
