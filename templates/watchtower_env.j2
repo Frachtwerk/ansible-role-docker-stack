@@ -22,7 +22,7 @@ WATCHTOWER_REMOVE_VOLUMES=false
 WATCHTOWER_MONITOR_ONLY=false
 WATCHTOWER_NO_PULL=false
 {% if docker_watchtower_enable_labels | bool %}
-WATCHTOWER_LABEL_ENABLE=false
+WATCHTOWER_LABEL_ENABLE=true
 WATCHTOWER_LABEL_TAKE_PRECEDENCE=false
 {% endif %}
 {% if docker_watchtower_disabled_containers_list | length %}
