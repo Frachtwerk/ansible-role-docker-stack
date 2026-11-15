@@ -46,7 +46,7 @@ http:
     deny_allReferrerPolicy:
       headers:
         frameDeny: true
-        referrerPolicy: "{{ docker_traefik_secHeaders_referrer_policy | default('same-origin') }}"
+        referrerPolicy: "{{ docker_traefik_secheaders_referrer_policy }}"
     allow_referrerSameOrigin:
       headers:
         customFrameOptionsValue: 'sameorigin'
@@ -54,9 +54,9 @@ http:
       headers:
         browserXssFilter: true
         contentTypeNosniff: true
-        frameDeny: {{ (docker_traefik_secHeaders_custom_frame_deny | default('true')) | bool }}
+        frameDeny: {{ docker_traefik_secheaders_frame_deny | bool }}
         customFrameOptionsValue: 'sameorigin'
-        referrerPolicy: "{{ docker_traefik_secHeaders_referrer_policy | default('same-origin') }}"
+        referrerPolicy: "{{ docker_traefik_secheaders_referrer_policy }}"
         forceSTSHeader: true
         stsIncludeSubdomains: true
         stsPreload: true

@@ -44,10 +44,9 @@ entryPoints:
 {% if docker_traefik_enable_acme | bool %}
       tls:
         certResolver: leresolver
-{% set wildcards = (docker_traefik_wildcard_list + [docker_traefik_wildcard | default('')]) | select | unique | list %}
-{% if wildcards | length > 0 %}
+{% if docker_traefik_wildcard_list | length > 0 %}
         domains:
-{% for wildcard in wildcards %}
+{% for wildcard in docker_traefik_wildcard_list | unique %}
           - main: "{{ wildcard }}"
             sans:
               - "*.{{ wildcard }}"

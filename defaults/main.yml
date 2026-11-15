@@ -30,9 +30,11 @@ docker_traefik_certs_key_file: ""
 docker_traefik_enable_compression: false
 docker_traefik_enable_noindex: false
 docker_traefik_enable_headers: false
+docker_traefik_secheaders_referrer_policy: "same-origin"
+docker_traefik_secheaders_frame_deny: true
 docker_traefik_ports: []
 docker_traefik_additional_entrypoints: []
-docker_traefik_default_ipwhitelist: []
+docker_traefik_default_ipallowlist: []  # restricts the dashboard, usable as default-ipwhitelist@file
 docker_traefik_non_docker_services: []
 docker_traefik_trusted_proxies: []
 docker_traefik_https_enabled: true

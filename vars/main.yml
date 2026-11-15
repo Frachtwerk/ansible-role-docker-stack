@@ -2,6 +2,29 @@
 # vars file for role_docker_default_stack
 # Internal, computed values. Do not override.
 
+# variables that were renamed or removed: old name -> replacement
+_docker_stack_obsolete_vars:
+  docker_traefik_default_ipwhitelist: docker_traefik_default_ipallowlist
+  docker_traefik_basic_auth: docker_traefik_dashboard_basic_auth
+  docker_traefik_wildcard: docker_traefik_wildcard_list
+  docker_traefik_secHeaders_referrer_policy: docker_traefik_secheaders_referrer_policy
+  docker_traefik_secHeaders_custom_frame_deny: docker_traefik_secheaders_frame_deny
+  watchtower_poll_interval: docker_watchtower_poll_interval
+  watchtower_schedule: docker_watchtower_schedule
+  watchtower_cooldown_delay: docker_watchtower_cooldown_delay
+  watchtower_notification_url: docker_watchtower_notification_url
+  watchtower_notification_service: docker_watchtower_notification_url
+  watchtower_notification_email_from: docker_watchtower_notification_url (smtp://)
+  watchtower_notification_email_to: docker_watchtower_notification_url (smtp://)
+  watchtower_notification_email_server: docker_watchtower_notification_url (smtp://)
+  watchtower_notification_email_server_port: docker_watchtower_notification_url (smtp://)
+  watchtower_notification_email_server_user: docker_watchtower_notification_url (smtp://)
+  watchtower_notification_email_server_password: docker_watchtower_notification_url (smtp://)
+  watchtower_notification_email_delay: docker_watchtower_notification_url (smtp://)
+_docker_stack_obsolete_vars_set: >-
+  {{ _docker_stack_obsolete_vars | dict2items
+     | selectattr('key', 'in', query('ansible.builtin.varnames', '^(docker_traefik|watchtower)_')) | list }}
+
 # -- traefik -------------------
 _docker_traefik_entrypoint_port_numbers: "{{ docker_traefik_additional_entrypoints | map(attribute='port') | map('string') | list }}"
 _docker_traefik_entrypoint_ports: >-
@@ -24,7 +47,7 @@ _docker_traefik_ports: >-
      + _docker_traefik_metrics_ports
      + docker_traefik_ports }}
 
-_docker_traefik_ipallowlist: "{{ docker_traefik_default_ipwhitelist | unique }}"
+_docker_traefik_ipallowlist: "{{ docker_traefik_default_ipallowlist | unique }}"
 
 # keep networks attached to an existing container (e.g. app networks) on recreation
 _docker_traefik_networks: >-

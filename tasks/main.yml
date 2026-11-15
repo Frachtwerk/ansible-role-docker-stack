@@ -1,5 +1,13 @@
 ---
 # tasks file for fw-docker-stack
+- name: Check for renamed or removed variables
+  ansible.builtin.assert:
+    that: _docker_stack_obsolete_vars_set | length == 0
+    fail_msg: >-
+      Obsolete variables, please migrate:
+      {% for var in _docker_stack_obsolete_vars_set %}{{ var.key }} -> {{ var.value }}; {% endfor %}
+    quiet: true
+
 - name: Ensure docker is running
   ansible.builtin.service:
     name: docker

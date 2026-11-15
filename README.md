@@ -108,116 +108,37 @@ Depending on what loadout you wanna achieve:
 
 ## Role Variables
 
-```yml
+All variables and their defaults are documented in [`defaults/main.yml`](defaults/main.yml).
+Variables that were renamed or removed are listed in [`vars/main.yml`](vars/main.yml) (`_docker_stack_obsolete_vars`); the role fails if one of them is still set.
 
-docker_install_traefik: false
-docker_install_watchtower: false
-docker_install_portainer: false
-docker_install_portainer_agent: false
+Structured variables:
 
-##############
-# Portainer  #
-##############
+```yaml
+docker_traefik_additional_entrypoints:
+  - name: ssh
+    port: 2222
+    protocol: tcp  # tcp (default) or udp
+  - name: alt-https
+    port: 8443
+    http: true  # optional, adds TLS and middlewares below
+    ssl: true
+    headers: true
+    noindex: false
+    compression: false
 
-docker_portainer_image: portainer/portainer-ce
-docker_portainer_version: "latest"
-docker_portainer_parameter: "" # e.g.--logo
-docker_portainer_root_url: ""
-docker_portainer_parameter:
+docker_traefik_non_docker_services:
+  - name: nas
+    routes:
+      - url: nas.example.com
+        middlewares: ["default-ipwhitelist@file"]
+    servers:
+      - http://192.168.1.10:5000
 
-############
-# Traefik  #
-############
-
-docker_traefik_version: "v3.7.19"
-docker_traefik_path: "/opt/traefik/"
-docker_traefik_network_name: "proxy"
-docker_traefik_network_enable_ipv6: false
-docker_traefik_entrypoint_name_http: "web"
-docker_traefik_entrypoint_name_https: "websecure"
-docker_traefik_enable_stored_certs: false
-docker_traefik_enable_acme: false
-docker_traefik_enable_headers: false
-docker_traefik_enable_compression: false
-docker_traefik_enable_noindex: false
-docker_traefik_ports: []
-docker_traefik_additional_entrypoints: [{
-  name: ""
-  port: ""
-  protocol: ""
-}]
-docker_traefik_non_docker_services: [{
-  name: ""
-  routes: [{
-    url: ""
-    middlewares: []
-  }]
-  servers: []
-  traefik_default_networks: []
-}]
-docker_traefik_trusted_proxies: []
-docker_traefik_https_enabled: true
-docker_traefik_dashboard_enable: false
-docker_traefik_metrics_external: false
-docker_traefik_root_url: "{{ inventory_hostname }}"
-docker_traefik_dynamic_user: root
-docker_traefik_dynamic_group: root
-docker_traefik_force_restart: false
-docker_traefik_wildcard_list: []
-docker_traefik_dns_challenge: false
-docker_traefik_dns_provider: ""
-docker_traefik_dns_resolvers: []
-docker_traefik_dns_delay: "20"
-docker_traefik_accesslog_retention_days: 0 # >0: access log in {{ docker_traefik_path }}/logs, rotated daily, kept n days
-docker_traefik_default_ipwhitelist: []
-docker_traefik_dashboard_basic_auth: []
-docker_traefik_certs_crt_file: ""
-docker_traefik_certs_key_file: ""
-
-###############
-# watchtower  #
-###############
-
-docker_watchtower_path: "/opt/watchtower"
-docker_watchtower_dynamic_user: root  # for e.g user namespace remapping
-docker_watchtower_dynamic_group: root
-docker_watchtower_timezone: "Europe/Berlin"
-docker_watchtower_poll_interval: ""  # in seconds
-docker_watchtower_schedule: "0 30 4 * * 2,4"  # Every Tuesday and Thursday at 4:30:00
-docker_watchtower_enable_labels: false  # "com.centurylinklabs.watchtower.enable: true"
-docker_watchtower_api_token:
-docker_watchtower_enable_api: false  # to manualy trigger updates
-docker_watchtower_notification_url: []
-docker_watchtower_notifications_hostname: "{{ inventory_hostname }}"
-docker_watchtower_notification_title_tag: "{{ inventory_hostname }}"
-docker_watchtower_disabled_containers_list: []  # Regex patterns are supported
-docker_watchtower_log_level: info  # panic, fatal, error, warn, info, debug, trace
-docker_watchtower_log_format: Auto  # Auto, LogFmt, Pretty, JSON
-docker_watchtower_rolling_restart: false
-docker_watchtower_cooldown_delay: 12h
-
-############
-# Metrics  #
-############
-
-docker_traefik_metrics: false
-docker_traefik_metrics_port: number 
-docker_traefik_metrics_external: false #external erreichbar
-docker_traefik_metrics_network: "proxy"
-
-
-###########
-# Logins  #
-###########
-
-docker_logins: [{
-  docker_registry_url: ""
-  docker_registry_user: ""
-  docker_registry_pass: ""
-}]
-
+docker_logins:
+  - docker_registry_url: registry.example.com
+    docker_registry_user: user
+    docker_registry_pass: secret
 ```
-
 
 ## License
 
