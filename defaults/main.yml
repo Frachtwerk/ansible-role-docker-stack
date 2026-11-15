@@ -32,6 +32,8 @@ docker_traefik_default_ipwhitelist: []
 docker_traefik_non_docker_services: []
 docker_traefik_trusted_proxies: []
 docker_traefik_https_enabled: true
+docker_traefik_api_enable: false
+docker_traefik_dashboard_enable: false
 docker_traefik_metrics: false
 docker_traefik_metrics_external: false
 docker_traefik_root_url: "{{ inventory_hostname }}"

@@ -5,10 +5,12 @@ global:
 serversTransport:
   insecureSkipVerify: true
 
+{% if docker_traefik_api_enable %}
 api:
-  dashboard: true
-{% if not docker_traefik_https_enabled | bool %}
+  dashboard: {{ docker_traefik_dashboard_enable | bool }}
+{% if docker_traefik_api_enable and not docker_traefik_https_enabled | bool %}
   insecure: true
+{% endif %}
 {% endif %}
 
 entryPoints:

@@ -158,6 +158,7 @@ docker_traefik_non_docker_services: [{
 }]
 docker_traefik_trusted_proxies: []
 docker_traefik_https_enabled: true
+docker_traefik_dashboard_enable: false
 docker_traefik_metrics_external: false
 docker_traefik_root_url: "{{ inventory_hostname }}"
 docker_traefik_dynamic_user: root
@@ -169,8 +170,7 @@ docker_traefik_dns_provider: ""
 docker_traefik_dns_resolvers: []
 docker_traefik_dns_delay: "20"
 docker_traefik_default_ipwhitelist: []
-docker_traefik_basic_auth: []
-docker_traefik_root_url: ""
+docker_traefik_dashboard_basic_auth: []
 docker_traefik_certs_crt_file: ""
 docker_traefik_certs_key_file: ""
 

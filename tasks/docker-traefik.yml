@@ -155,6 +155,10 @@
   when: traefik_cert_volumes is defined
 
 # Labels
+- name: Create traefik_labels
+  ansible.builtin.set_fact:
+    traefik_labels: {}
+
 - name: Create traefik labels (https)
   ansible.builtin.set_fact:
     traefik_labels:
@@ -162,7 +166,7 @@
       traefik.http.routers.traefik.entrypoints: "{{ docker_traefik_entrypoint_name_https }}"
       traefik.http.routers.traefik.rule: "Host(`{{ docker_traefik_root_url }}`)"
       traefik.http.routers.traefik.service: "api@internal"
-  when: docker_traefik_https_enabled | bool
+  when: docker_traefik_https_enabled | bool and docker_traefik_dashboard_enable
 
 - name: Add traefik labels (tls)
   ansible.builtin.set_fact:
@@ -170,7 +174,7 @@
   with_items:
     - {key: traefik.http.routers.traefik.tls, value: "true"}
     - {key: traefik.http.routers.traefik.tls.certresolver, value: "leresolver"}
-  when: docker_traefik_https_enabled | bool and docker_traefik_enable_acme | bool
+  when: docker_traefik_https_enabled | bool and docker_traefik_enable_acme | bool and docker_traefik_dashboard_enable
 
 - name: Create traefik labels (http)
   ansible.builtin.set_fact:
@@ -179,25 +183,25 @@
       traefik.http.routers.traefik.entrypoints: "{{ docker_traefik_entrypoint_name_http }}"
       traefik.http.routers.traefik.rule: "Host(`{{ docker_traefik_root_url }}`)"
       traefik.http.routers.traefik.service: "api@internal"
-  when: not docker_traefik_https_enabled | bool
+  when: not docker_traefik_https_enabled | bool and docker_traefik_dashboard_enable
 
 - name: Create IP-Whitelist-Label
   ansible.builtin.set_fact:
     traefik_whitelist_labels:
       traefik.http.routers.traefik.middlewares: "default-ipwhitelist@file"
-  when: ipwhitelist | length > 0
+  when: ipwhitelist | length > 0 and docker_traefik_dashboard_enable
 
 - name: Append IP-Whitelist-Label
   ansible.builtin.set_fact:
     traefik_labels: "{{ traefik_labels | combine(traefik_whitelist_labels) }}"
-  when: ipwhitelist | length > 0
+  when: ipwhitelist | length > 0 and docker_traefik_dashboard_enable
 
 - name: Create Auth-Label
   ansible.builtin.set_fact:
     traefik_auth_labels:
-      traefik.http.middlewares.traefik-auth.basicauth.users: "{{ docker_traefik_basic_auth }}"
+      traefik.http.middlewares.traefik-auth.basicauth.users: "{{ docker_traefik_dashboard_basic_auth }}"
       traefik.http.routers.traefik.middlewares: "traefik-auth@docker"
-  when: docker_traefik_basic_auth is defined
+  when: docker_traefik_dashboard_basic_auth is defined and docker_traefik_dashboard_enable
 
 - name: Append Auth-Label
   ansible.builtin.set_fact:
