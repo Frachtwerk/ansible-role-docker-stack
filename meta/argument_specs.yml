@@ -1,0 +1,116 @@
+---
+argument_specs:
+  main:
+    short_description: Deploys Traefik, Portainer and Watchtower as default stack
+    description: Defaults and comments are in defaults/main.yml.
+    options:
+      docker_install_traefik: {type: bool}
+      docker_install_watchtower: {type: bool}
+      docker_install_portainer: {type: bool}
+      docker_install_portainer_agent: {type: bool}
+      docker_logins:
+        type: list
+        elements: dict
+        options:
+          docker_registry_url: {type: str, required: true}
+          docker_registry_user: {type: str, required: true}
+          docker_registry_pass: {type: str, required: true, no_log: true}
+
+      # -- portainer -----------------
+      docker_portainer_image: {type: str}
+      docker_portainer_version: {type: str}
+      docker_portainer_parameter: {type: str}
+      docker_portainer_healthcheck: {type: dict}
+      docker_portainer_ip_address: {type: str}
+      docker_portainer_root_url: {type: str}
+
+      # -- traefik -------------------
+      docker_traefik_version: {type: str}
+      docker_traefik_ip_address: {type: str}
+      docker_traefik_custom_environment: {type: dict}
+      docker_traefik_path: {type: path}
+      docker_traefik_network_name: {type: str}
+      docker_traefik_network_enable_ipv6: {type: bool}
+      docker_traefik_entrypoint_name_http: {type: str}
+      docker_traefik_entrypoint_name_https: {type: str}
+      docker_traefik_enable_stored_certs: {type: bool}
+      docker_traefik_enable_acme: {type: bool}
+      docker_traefik_acme_mail: {type: str}
+      docker_traefik_certs_crt_file: {type: str}
+      docker_traefik_certs_key_file: {type: str}
+      docker_traefik_enable_compression: {type: bool}
+      docker_traefik_enable_noindex: {type: bool}
+      docker_traefik_enable_headers: {type: bool}
+      docker_traefik_secheaders_referrer_policy: {type: str}
+      docker_traefik_secheaders_frame_deny: {type: bool}
+      docker_traefik_ports: {type: list, elements: str}
+      docker_traefik_additional_entrypoints:
+        type: list
+        elements: dict
+        options:
+          name: {type: str, required: true}
+          port: {type: int, required: true}
+          protocol: {type: str, choices: ["", tcp, udp]}
+          http: {type: bool}
+          ssl: {type: bool}
+          headers: {type: bool}
+          noindex: {type: bool}
+          compression: {type: bool}
+      docker_traefik_default_ipallowlist: {type: list, elements: str}
+      docker_traefik_non_docker_services:
+        type: list
+        elements: dict
+        options:
+          name: {type: str, required: true}
+          routes:
+            type: list
+            elements: dict
+            required: true
+            options:
+              url: {type: str, required: true}
+              middlewares: {type: list, elements: str}
+          servers: {type: list, elements: str, required: true}
+      docker_traefik_trusted_proxies: {type: list, elements: str}
+      docker_traefik_https_enabled: {type: bool}
+      docker_traefik_api_enable: {type: bool}
+      docker_traefik_dashboard_enable: {type: bool}
+      docker_traefik_dashboard_basic_auth:
+        type: raw
+        description: htpasswd entry as string or list of entries
+      docker_traefik_metrics: {type: bool}
+      docker_traefik_metrics_external: {type: bool}
+      docker_traefik_metrics_port: {type: int}
+      docker_traefik_metrics_network: {type: str}
+      docker_traefik_root_url: {type: str}
+      docker_traefik_dynamic_user: {type: str}
+      docker_traefik_dynamic_group: {type: str}
+      docker_traefik_force_restart: {type: bool}
+      docker_traefik_wildcard_list: {type: list, elements: str}
+      docker_traefik_dns_challenge: {type: bool}
+      docker_traefik_dns_provider: {type: str}
+      docker_traefik_dns_resolvers: {type: list, elements: str}
+      docker_traefik_dns_delay: {type: str}
+      docker_traefik_accesslog_retention_days: {type: int}
+
+      # -- watchtower -----------------
+      docker_watchtower_path: {type: path}
+      docker_watchtower_dynamic_user: {type: str}
+      docker_watchtower_dynamic_group: {type: str}
+      docker_watchtower_timezone: {type: str}
+      docker_watchtower_poll_interval: {type: str}
+      docker_watchtower_schedule: {type: str}
+      docker_watchtower_enable_labels: {type: bool}
+      docker_watchtower_api_token: {type: str, no_log: true}
+      docker_watchtower_enable_api: {type: bool}
+      docker_watchtower_notification_url: {type: list, elements: str, no_log: true}
+      docker_watchtower_notifications_hostname: {type: str}
+      docker_watchtower_notification_title_tag: {type: str}
+      docker_watchtower_disabled_containers_list: {type: list, elements: str}
+      docker_watchtower_log_level:
+        type: str
+        choices: [panic, fatal, error, warn, info, debug, trace]
+      docker_watchtower_log_format:
+        type: str
+        choices: [Auto, LogFmt, Pretty, JSON]
+      docker_watchtower_rolling_restart: {type: bool}
+      docker_watchtower_cooldown_delay: {type: str}

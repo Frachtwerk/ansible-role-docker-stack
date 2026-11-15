@@ -8,6 +8,21 @@
       {% for var in _docker_stack_obsolete_vars_set %}{{ var.key }} -> {{ var.value }}; {% endfor %}
     quiet: true
 
+- name: Check dependent variables
+  ansible.builtin.assert:
+    that:
+      - not docker_traefik_enable_acme | bool or docker_traefik_acme_mail | length > 0
+      - not docker_traefik_dns_challenge | bool or docker_traefik_dns_provider | length > 0
+      - not docker_traefik_enable_stored_certs | bool or docker_traefik_enable_acme | bool
+        or (docker_traefik_certs_crt_file | length > 0 and docker_traefik_certs_key_file | length > 0)
+      - not docker_traefik_dashboard_enable | bool or docker_traefik_api_enable | bool
+    fail_msg: >-
+      docker_traefik_enable_acme needs docker_traefik_acme_mail, docker_traefik_dns_challenge needs
+      docker_traefik_dns_provider, docker_traefik_enable_stored_certs needs docker_traefik_certs_crt_file
+      and docker_traefik_certs_key_file, docker_traefik_dashboard_enable needs docker_traefik_api_enable
+    quiet: true
+  when: docker_install_traefik | bool
+
 - name: Ensure docker is running
   ansible.builtin.service:
     name: docker
